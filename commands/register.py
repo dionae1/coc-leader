@@ -8,19 +8,15 @@ class Register(commands.Cog):
         self.db = Database("database.db")
 
     @commands.command(name="register")
-    async def register(self, ctx: commands.Context, clan_tag: str):
+    async def register(self, ctx, clan_tag: str):
+        await self.client.clan_info.fetch(clan_tag)
+
         if self.db.get_user(ctx.author.id):
             self.db.update_clan_tag(ctx.author.id, clan_tag)
             await ctx.send("✅ Clan tag updated.")
             return
 
-        if not ctx.guild:
-            await ctx.send("⛔ This command can only be used in a server.")
-            return
-
-        self.db.add_user(
-            ctx.author.id, ctx.guild.id, str(ctx.author), "UNKNOWN", clan_tag
-        )
+        self.db.add_user(ctx.author.id, ctx.author.name, clan_tag)
 
         await ctx.send(
             f"📝 Assigned to {self.client.clan_info.get_clan().name} - {self.client.clan_info.get_clan().tag}"
