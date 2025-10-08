@@ -13,10 +13,11 @@ class Member(commands.Cog):
 
     @commands.command(name="members")
     async def members(self, ctx: commands.Context):
-        if not await self.client.validator.user_registered(ctx):
+        if not await self.client.validator.server_registered(ctx):
             return
 
-        clan = await self.client.service.get_clan(ctx.author.id)
+        guild = self.client.validator.require_guild(ctx)
+        clan = await self.client.service.get_clan(guild.id)
 
         members: List[coc.ClanMember] = sorted(
             clan.members,
@@ -42,7 +43,7 @@ class Member(commands.Cog):
 
     @commands.command(name="member")
     async def member(self, ctx: commands.Context, player_tag: str):
-        if not await self.client.validator.user_registered(ctx):
+        if not await self.client.validator.server_registered(ctx):
             return
 
         try:

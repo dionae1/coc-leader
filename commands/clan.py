@@ -11,10 +11,11 @@ class Clan(commands.Cog):
 
     @commands.command(name="clan")
     async def clan(self, ctx: commands.Context):
-        if not await self.client.validator.user_registered(ctx):
+        if not await self.client.validator.server_registered(ctx):
             return
 
-        clan = await self.client.service.get_clan(ctx.author.id)
+        guild = self.client.validator.require_guild(ctx)
+        clan = await self.client.service.get_clan(guild.id)
 
         clan_name = clan.name
         clan_tag = clan.tag

@@ -24,25 +24,25 @@ class CoCService:
         assert API_EMAIL is not None and API_PASSWORD is not None
         await self.coc_client.login(email=API_EMAIL, password=API_PASSWORD)
 
-    async def get_clan(self, discord_id: int) -> coc.Clan:
-        user = self.db.get_user(discord_id)
-        if not user:
+    async def get_clan(self, server_discord_id: int) -> coc.Clan:
+        server = self.db.get_server(server_discord_id)
+        if not server:
             raise ClanNotAssignedError()
 
         try:
-            clan = await self.coc_client.get_clan(user[2])
+            clan = await self.coc_client.get_clan(server[1])
             return clan
 
         except coc.errors.NotFound:
             raise ClanNotFoundError()
 
-    async def get_current_war(self, discord_id: int) -> coc.ClanWar | None:
-        user = self.db.get_user(discord_id)
-        if not user:
+    async def get_current_war(self, server_discord_id: int) -> coc.ClanWar | None:
+        server = self.db.get_server(server_discord_id)
+        if not server:
             raise ClanNotAssignedError()
 
         try:
-            war = await self.coc_client.get_clan_war(user[2])
+            war = await self.coc_client.get_clan_war(server[1])
             return war
 
         except Exception as e:

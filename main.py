@@ -24,6 +24,7 @@ async def main():
 
     intents = discord.Intents.default()
     intents.message_content = True
+    intents.members = True
 
     service = await start(db)
 

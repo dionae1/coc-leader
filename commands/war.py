@@ -12,14 +12,17 @@ class War(commands.Cog):
 
     @commands.command(name="war")
     async def war(self, ctx: commands.Context):
-        if not await self.client.validator.user_registered(ctx):
+        if not await self.client.validator.server_registered(ctx):
             return
 
-        clan = await self.client.service.get_clan(ctx.author.id)
-        war = await self.client.service.get_current_war(ctx.author.id)
+        guild = self.client.validator.require_guild(ctx)
+        clan = await self.client.service.get_clan(guild.id)
+        war = await self.client.service.get_current_war(guild.id)
 
         if not war:
-            await ctx.send("⛔ No current war found for your clan.")
+            await ctx.send(
+                "⛔ No current war found for your clan. Is your clan war history public? 🤔"
+            )
             return
 
         if not war.clan or not war.opponent:
